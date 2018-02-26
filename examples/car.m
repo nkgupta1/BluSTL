@@ -20,21 +20,20 @@ Dw = [0 0];
 
 Sys= STLC_lti(A,Bu,Bw,C,Du,Dw); 
 
-Sys.x0= [0 ; -1];
+Sys.x0= [-3 ; 0];
 
-Sys.time = 0:.1:10; 
-Sys.ts=.2; % sampling time for controller
-Sys.L=10;   % horizon is 2s in that case
+Sys.time = 0:.5:20; 
+Sys.ts=1; % sampling time for controller
+Sys.L=10;   % horizon
 
 Sys.u_ub = [1; 1];  % upper bound on u 
 Sys.u_lb = [0; -1]; % lower bound on u
-%Sys.u_delta = [1; 1] % not really sure what this does
+Sys.u_delta = [1; 1] % not really sure what this does
 
 Sys.Wref = [Sys.time*0.; Sys.time*0.];
 
-% It is being very picky about what constraints I add, not really sure why.
-% It probably stems from a misunderstanding...
-Sys.stl_list = {'alw ( x2(t)<3 and x2(t)>-3)'};
+
+Sys.stl_list = {'alw ( x2(t)<2 and x2(t)>-2 and (abs(x1(t)) > 0.4 or abs(x2(t)) > 0.4)) and ev (x1(t)>0) '};
 
 fprintf("getting controller...\n");
 controller = get_controller(Sys)
