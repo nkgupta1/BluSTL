@@ -28,7 +28,7 @@ Sys.L=10;   % horizon
 
 Sys.u_ub = [1; 1];  % upper bound on u 
 Sys.u_lb = [0; -1]; % lower bound on u
-Sys.u_delta = [1; 1] % not really sure what this does
+% Sys.u_delta = [1; 1]; % not really sure what this does
 
 Sys.Wref = [Sys.time*0.; Sys.time*0.];
 
