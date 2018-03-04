@@ -22,7 +22,7 @@ Sys= STLC_lti(A,Bu,Bw,C,Du,Dw);
 
 Sys.x0= [-3 ; 0];
 
-Sys.time = 0:1:100; 
+Sys.time = 0:1:70; 
 Sys.ts=2; % sampling time for controller
 Sys.L=10;   % horizon
 
@@ -34,13 +34,15 @@ Sys.Wref = [Sys.time*0.; Sys.time*0.];
 % signal is default off
 Sys.Wref(1,:) = -1;
 % signal is on for some period of time
-Sys.Wref(1,11/1:25/1) = 1;
+Sys.Wref(1,4/1:20/1) = 1;
 
 Sys.stl_list = {};
 % make sure we eventually pass the intersection
-Sys.stl_list(end+1) = {'ev (x1(t)>1)'};
+% Sys.stl_list(end+1) = {'ev (x1(t)>1)'};
 % make sure we aren't in the intersection while light is on
-Sys.stl_list(end+1) = {'and alw (w1(t)>0 => (abs(x1(t)) > 1 and ev (w1(t) < 0)))'};
+Sys.stl_list(end+1) = {'alw (w1(t)>0 => (abs(x1(t)) > 1 and ev (w1(t) < 0)))'};
+% make sure that we progress if the enviornment is good to us
+Sys.stl_list(end+1) = {'and alw (w1(t)<0 => ev (x1(t)>1))'};
 
 Sys.stl_list = {strjoin(Sys.stl_list)};
 
@@ -55,15 +57,19 @@ Sys= Sys.run_deterministic(controller);
 
 %% Plot the path of the car over time
 figure;
-h = animatedline();
-axis([-3 3 -3 3])
+h = animatedline('linewidth', 10);
+axis([-3 3 -3 3]);
+set(gca, 'fontsize', 25);
+hold on;
+rectangle('Position', [-3 -1 6 2], 'LineWidth', 3, 'FaceColor', [0 0 0 0.5]);
 hold on;
 for i=1:length(Sys.system_data.X(1, :))
-    title(['time=' num2str(Sys.time(i))]);
-    h2 = plot( Sys.system_data.X(2, i),  Sys.system_data.X(1, i), 'or');
+    title(['time=' num2str(Sys.time(i))], 'fontsize', 30);
+    h2 = plot( Sys.system_data.X(2, i),  Sys.system_data.X(1, i), '^r-', 'MarkerSize', 25, 'MarkerFaceColor', 'r');
     addpoints(h, Sys.system_data.X(2, i), Sys.system_data.X(1, i))
     drawnow;
-    pause(.1);
+    % pause(.1);
+    % saveas(gcf, ['images/car_signal-'  sprintf('%03d', i) '.png']);
     set(h2, 'Visible', 'off');
 end
 set(h2, 'Visible', 'on')

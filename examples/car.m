@@ -45,15 +45,21 @@ Sys= Sys.run_deterministic(controller);
 
 %% Plot the path of the car over time
 figure;
-h = animatedline();
-axis([-3 3 -3 3])
+
+h = animatedline('linewidth', 10);
+axis([-3 3 -3 3]);
+set(gca, 'fontsize', 25)
+rectangle('Position', [-0.4 -0.4 0.8 0.8], 'FaceColor', 'black')
 for i=1:21
-    hold on;
-    h2 = plot( Sys.system_data.X(2, i),  Sys.system_data.X(1, i), 'or')
-    addpoints(h, Sys.system_data.X(2, i), Sys.system_data.X(1, i))
-    drawnow
+hold on;
+    title(['time=' num2str(Sys.time(i))], 'fontsize', 30);
+    h2 = plot( Sys.system_data.X(2, i),  Sys.system_data.X(1, i), '^r-', 'MarkerSize', 25, 'MarkerFaceColor', 'r');
+    addpoints(h, Sys.system_data.X(2, i), Sys.system_data.X(1, i));
+    drawnow;
     hold off;
-    pause(.1)
-    set(h2, 'Visible', 'off')
+    %pause(.1);
+    %saveas(gcf, ['images/car-'  num2str(i) '.png']);
+    set(h2, 'Visible', 'off');
 end
-set(h2, 'Visible', 'on')
+set(h2, 'Visible', 'on');
+saveas(gcf, ['images/car.png']);
