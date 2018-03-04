@@ -42,3 +42,18 @@ controller = get_controller(Sys)
 fprintf("running...\n");
 %Sys.solver_options = sdpsettings(Sys.solver_options, 'verbose', 2)
 Sys= Sys.run_deterministic(controller);
+
+%% Plot the path of the car over time
+figure;
+h = animatedline();
+axis([-3 3 -3 3])
+for i=1:21
+    hold on;
+    h2 = plot( Sys.system_data.X(2, i),  Sys.system_data.X(1, i), 'or')
+    addpoints(h, Sys.system_data.X(2, i), Sys.system_data.X(1, i))
+    drawnow
+    hold off;
+    pause(.1)
+    set(h2, 'Visible', 'off')
+end
+set(h2, 'Visible', 'on')

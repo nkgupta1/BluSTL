@@ -34,7 +34,7 @@ Sys.Wref = [Sys.time*0.; Sys.time*0.];
 % signal is default off
 Sys.Wref(1,:) = -1;
 % signal is on for some period of time
-Sys.Wref(1,11/1:15/1) = 1;
+Sys.Wref(1,11/1:25/1) = 1;
 
 Sys.stl_list = {};
 % make sure we eventually pass the intersection
@@ -51,4 +51,19 @@ controller = get_controller(Sys)
 
 fprintf("running...\n");
 %Sys.solver_options = sdpsettings(Sys.solver_options, 'verbose', 2)
-Sys= Sys.run_open_loop(controller);
+Sys= Sys.run_deterministic(controller);
+
+%% Plot the path of the car over time
+figure;
+h = animatedline();
+axis([-3 3 -3 3])
+hold on;
+for i=1:length(Sys.system_data.X(1, :))
+    title(['time=' num2str(Sys.time(i))]);
+    h2 = plot( Sys.system_data.X(2, i),  Sys.system_data.X(1, i), 'or');
+    addpoints(h, Sys.system_data.X(2, i), Sys.system_data.X(1, i))
+    drawnow;
+    pause(.1);
+    set(h2, 'Visible', 'off');
+end
+set(h2, 'Visible', 'on')
