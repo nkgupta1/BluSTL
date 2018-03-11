@@ -34,7 +34,9 @@ Sys.Wref = [Sys.time*0.; Sys.time*0.];
 % signal is default off
 Sys.Wref(1,:) = -1;
 % signal is on for some period of time
-Sys.Wref(1,4/1:20/1) = 1;
+signal_start = 4/1;
+signal_end   = 20/1;
+Sys.Wref(1,signal_start:signal_end) = 1;
 
 Sys.stl_list = {};
 % make sure we eventually pass the intersection
@@ -57,19 +59,27 @@ Sys= Sys.run_deterministic(controller);
 
 %% Plot the path of the car over time
 figure;
+hold on;
 h = animatedline('linewidth', 10);
 axis([-3 3 -3 3]);
 set(gca, 'fontsize', 25);
-hold on;
-rectangle('Position', [-3 -1 6 2], 'LineWidth', 3, 'FaceColor', [0 0 0 0.5]);
-hold on;
+
 for i=1:length(Sys.system_data.X(1, :))
     title(['time=' num2str(Sys.time(i))], 'fontsize', 30);
+    
+    if Sys.time(i) < signal_start || Sys.time(i) > signal_end
+        r = rectangle('Position', [-3 -1 6 2], 'LineWidth', 3, 'FaceColor', [0 0 0 0.5]);
+    else
+        r = rectangle('Position', [-3 -1 6 2], 'LineWidth', 3, 'FaceColor', [1 0 0 0.5]);
+    end
     h2 = plot( Sys.system_data.X(2, i),  Sys.system_data.X(1, i), '^r-', 'MarkerSize', 25, 'MarkerFaceColor', 'r');
     addpoints(h, Sys.system_data.X(2, i), Sys.system_data.X(1, i))
     drawnow;
-    % pause(.1);
-    % saveas(gcf, ['images/car_signal-'  sprintf('%03d', i) '.png']);
-    set(h2, 'Visible', 'off');
+    
+    pause(.05);
+    saveas(gcf, ['images/car_signal-'  sprintf('%03d', i) '.png']);
+    delete(h2);
+    delete(r);
 end
-set(h2, 'Visible', 'on')
+rectangle('Position', [-3 -1 6 2], 'LineWidth', 3, 'FaceColor', [0 0 0 0.5]);
+plot( Sys.system_data.X(2, i),  Sys.system_data.X(1, i), '^r-', 'MarkerSize', 25, 'MarkerFaceColor', 'r');
