@@ -122,6 +122,8 @@ Ddu=Dd(:,1:nu);
 Ddw=Dd(:,nu+1:end);
 K = Sys.K;
 
+region = binvar(2, 2*L)
+
 % Constraints for states (if any)
 for k=1:2*L
     if k==1
@@ -131,8 +133,15 @@ for k=1:2*L
         % if k is past (done(k)==1), use values in Tdone, otherwise use linear update
         Fdyn = [Fdyn, Xdone(:,k) - (1-done(k-1))*M <=  X(:,k) <= Xdone(:, k)+ (1-done(k-1))*M];
         
+        Fdyn = [Fdyn, sum(region(:, k)) == 1]
         % not done values
-        Fdyn = [Fdyn, ((Ad*X(:,k-1) + Bdu*U(:,k-1) + Bdw*W( :, k-1 ) + K) - done(k-1)*M) <=  X(:,k) <= ((Ad*X(:,k-1) + Bdu*U(:,k-1) + Bdw*W( :, k-1 )+ K) + done(k-1)*M)];
+        % Fdyn = [Fdyn, ((Ad*X(:,k-1) + Bdu*U(:,k-1) + Bdw*W( :, k-1 ) + K) - done(k-1)*M) <=  X(:,k) <= ((Ad*X(:,k-1) + Bdu*U(:,k-1) + Bdw*W( :, k-1 )+ K) + done(k-1)*M)];
+        Fdyn = [Fdyn, implies(region(1, k), [X(:,k-1)<=400, ((Ad*X(:,k-1) + Bdu*U(:,k-1) + Bdw*W( :, k-1 ) + K) - done(k-1)*M) <=  X(:,k) <= ((Ad*X(:,k-1) + Bdu*U(:,k-1) + Bdw*W( :, k-1 )+ K) + done(k-1)*M)])];
+        % Fdyn = [Fdyn, implies(region(1), [X(:,k-1)<=1, 0 <=  X(:,k) <= 1])];
+        % Fdyn = [Fdyn, implies(region(2), [400 <= X(:,k-1), ((0*X(:,k-1) + Bdu*U(:,k-1) + Bdw*W( :, k-1 ) + K) - done(k-1)*M) <=  X(:,k) <= ((0*X(:,k-1) + Bdu*U(:,k-1) + Bdw*W( :, k-1 )+ K) + done(k-1)*M)])];
+        Fdyn = [Fdyn, implies(region(2, k), [400 <= X(:,k-1), X(:,k-1) - 1 <=  X(:,k) <= X(:,k-1) + 1])];
+
+
     end
 end
 
