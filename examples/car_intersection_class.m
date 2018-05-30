@@ -19,7 +19,13 @@ classdef car_intersection_class < STLC_lti
             
         end
         
-            
+        function obj = get_objective(Sys, X, Y, U, W, rho,wr,wt1)
+            % last term penalizes inputs late in execution
+            % https://yalmip.github.io/command/sdpfun/
+            % a = sdpfun(find(max(abs(U))),'max');
+            %obj = norm(sum(abs(U),2), Sys.nrm)-wr*norm(sum(rho,2), Sys.nrm) + a;
+            obj = norm(sum(abs(U),2), Sys.nrm)-wr*norm(sum(rho,2), Sys.nrm) + max(find(sum(abs(double(U))>0.1)));
+        end  
         
     end
     

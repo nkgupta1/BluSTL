@@ -27,7 +27,7 @@ SC.Wref = [SC.time*0.; SC.time*0.];
 SC.stl_list = {};
 
 % goal, make sure we are in our lane and past the intersection
-SC.stl_list(end+1) = {'ev (x1(t) < -1 and x2(t) < 1 and x2(t) > 0)'};
+SC.stl_list(end+1) = {'ev (x1(t) < -2 and x2(t) < 1 and x2(t) > 0)'};
 
 % safety, make sure we are always in our lane
 SC.stl_list(end+1) = {'and alw ((x1(t) > 0 and x1(t) < 1) or (x2(t) > 0 and x2(t) < 1))'};
