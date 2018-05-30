@@ -40,14 +40,17 @@ Sys.stl_list = {};
 
 % goal, make sure we are in our lane and past the intersection
 %Sys.stl_list(end+1) = {'alw (ev (x1(t) < -1 and x2(t) < 1 and x2(t) > 0))'};
-Sys.stl_list(end+1) = {' alw (ev (x2(t) <  1))'};
-Sys.stl_list(end+1) = {'alw (ev (x2(t) >  0))'};
-Sys.stl_list(end+1) = {'    alw (ev (x1(t) < -1))'};
+Sys.stl_list(end+1) = {'alw (ev (x2(t) <  1))'};
+Sys.stl_list(end+1) = {'and alw (ev (x2(t) >  0))'};
+Sys.stl_list(end+1) = {'and alw (ev (x1(t) < -1))'};
 
 % safety, make sure we are always in our lane or in the intersection
-% TODO add freedom in the intersection
-Sys.stl_list(end+1) = {'alw ((x1(t) > 0 and x1(t) < 1) or (x2(t) > 0 and x2(t) < 1))'};
+Sys.stl_list(end+1) = {'and alw ((x1(t) > 0 and x1(t) < 1) or (x2(t) > 0 and x2(t) < 1))'};
 
+% make sure we don't hit another car
+% Sys.stl_list(end+1) = {'alw (abs(x1(t) - w1(t)) > 0.5 or abs(x2(t) - w2(t) > 0.5))'};
+
+Sys.stl_list = {strjoin(Sys.stl_list)};
 
 fprintf("getting controller...\n");
 controller = get_controller(Sys)
