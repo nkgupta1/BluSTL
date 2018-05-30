@@ -23,7 +23,7 @@ Sys= STLC_lti(A,Bu,Bw,C,Du,Dw);
 % x, y
 Sys.x0= [0.5 ; -3];
 
-max_time = 20;
+max_time = 50;
 
 Sys.time = 0:.5:max_time; 
 Sys.ts=1; % sampling time for controller
@@ -39,10 +39,10 @@ Sys.Wref = [Sys.time*0.; Sys.time*0.];
 Sys.stl_list = {};
 
 % goal, make sure we are in our lane and past the intersection
-%Sys.stl_list(end+1) = {'alw (ev (x1(t) < -1 and x2(t) < 1 and x2(t) > 0))'};
-Sys.stl_list(end+1) = {'alw (ev (x2(t) <  1))'};
-Sys.stl_list(end+1) = {'and alw (ev (x2(t) >  0))'};
-Sys.stl_list(end+1) = {'and alw (ev (x1(t) < -1))'};
+Sys.stl_list(end+1) = {'ev (x1(t) < -1 and x2(t) < 1 and x2(t) > 0)'};
+%Sys.stl_list(end+1) = {'alw (ev (x2(t) <  1))'};
+%Sys.stl_list(end+1) = {'and alw (ev (x2(t) >  0))'};
+%Sys.stl_list(end+1) = {'and alw (ev (x1(t) < -1))'};
 
 % safety, make sure we are always in our lane or in the intersection
 Sys.stl_list(end+1) = {'and alw ((x1(t) > 0 and x1(t) < 1) or (x2(t) > 0 and x2(t) < 1))'};
@@ -60,7 +60,6 @@ fprintf("running...\n");
 Sys= Sys.run_deterministic(controller);
 
 %% Plot the path of the car over time
-close;
 figure;
 
 h = animatedline('linewidth', 10);
