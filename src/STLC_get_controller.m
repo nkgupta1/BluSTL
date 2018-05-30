@@ -134,12 +134,16 @@ for k=1:2*L
         Fdyn = [Fdyn, Xdone(:,k) - (1-done(k-1))*M <=  X(:,k) <= Xdone(:, k)+ (1-done(k-1))*M];
         
         Fdyn = [Fdyn, sum(region(:, k)) == 1]
+
         % not done values
         % Fdyn = [Fdyn, ((Ad*X(:,k-1) + Bdu*U(:,k-1) + Bdw*W( :, k-1 ) + K) - done(k-1)*M) <=  X(:,k) <= ((Ad*X(:,k-1) + Bdu*U(:,k-1) + Bdw*W( :, k-1 )+ K) + done(k-1)*M)];
-        Fdyn = [Fdyn, implies(region(1, k), [X(:,k-1)<=400, ((Ad*X(:,k-1) + Bdu*U(:,k-1) + Bdw*W( :, k-1 ) + K) - done(k-1)*M) <=  X(:,k) <= ((Ad*X(:,k-1) + Bdu*U(:,k-1) + Bdw*W( :, k-1 )+ K) + done(k-1)*M)])];
+        Fdyn = [Fdyn, implies(region(1, k), [X(:,k-1)<=400, ((Ad*X(:,k-1) + Bdu*U(:,k-1) + Bdw*W( :, k-1 ) + K) - done(k-1)*M) <=  X(:,k) <= ((Ad*X(:,k-1) + Bdu*U(:,k-1) + Bdw*W( :, k-1 )+ K) + done(k-1)*M)]);];
+        % Fdyn = [Fdyn, implies(1 == 1, [X(:,k-1)<=300, ((Ad*X(:,k-1) + Bdu*U(:,k-1) + Bdw*W( :, k-1 ) + K) - done(k-1)*M) <=  X(:,k) <= ((Ad*X(:,k-1) + Bdu*U(:,k-1) + Bdw*W( :, k-1 )+ K) + done(k-1)*M)])];
+
         % Fdyn = [Fdyn, implies(region(1), [X(:,k-1)<=1, 0 <=  X(:,k) <= 1])];
         % Fdyn = [Fdyn, implies(region(2), [400 <= X(:,k-1), ((0*X(:,k-1) + Bdu*U(:,k-1) + Bdw*W( :, k-1 ) + K) - done(k-1)*M) <=  X(:,k) <= ((0*X(:,k-1) + Bdu*U(:,k-1) + Bdw*W( :, k-1 )+ K) + done(k-1)*M)])];
-        Fdyn = [Fdyn, implies(region(2, k), [400 <= X(:,k-1), X(:,k-1) - 1 <=  X(:,k) <= X(:,k-1) + 1])];
+        Fdyn = [Fdyn, implies(region(2, k), [400 <= X(:,k-1), X(:,k-1) - 1 <=  X(:,k) <= X(:,k-1) + 10]);];
+        % Fdyn = [Fdyn, implies(region(2, k), [X(:,k-1)>=400, ((-Ad*X(:,k-1) + Bdu*U(:,k-1) + Bdw*W( :, k-1 ) + K) - done(k-1)*M) <=  X(:,k) <= ((-Ad*X(:,k-1) + Bdu*U(:,k-1) + Bdw*W( :, k-1 )+ K) + done(k-1)*M)]);];
 
 
     end
