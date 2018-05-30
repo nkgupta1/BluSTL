@@ -66,7 +66,7 @@ for i=1:length(SC.system_data.X(1, :))
     drawnow;
     
     pause(.05);
-    % saveas(gcf, ['images/car_signal-'  sprintf('%03d', i) '.png']);
+    % saveas(gcf, ['images/signal2/car_signal-'  sprintf('%03d', i) '.png']);
     delete(h2);
     delete(r);
 end
