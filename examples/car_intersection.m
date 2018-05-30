@@ -6,58 +6,43 @@ close;
 % to move in a direction without explictly turning. This is a
 % simplification until integrating piecewise linear works.
 % 
-A = [0 0 ;
-     0 0];
-Bu = [1 0;
-      0 1];
-
-Bw = [0 0;
-      0 0]; 
-
-C = [0 0];
-Du = [0 0];
-Dw = [0 0];
-
-Sys= STLC_lti(A,Bu,Bw,C,Du,Dw); 
+SC = car_intersection_class(); 
 
 % x, y
-Sys.x0= [0.5 ; -3];
+SC.x0= [0.5 ; -3];
 
-max_time = 50;
+max_time = 20;
 
-Sys.time = 0:.5:max_time; 
-Sys.ts=1; % sampling time for controller
-Sys.L=10;   % horizon
+SC.time = 0:.5:max_time; 
+SC.ts=1; % sampling time for controller
+SC.L=10;   % horizon
 
 % can move either up or left or right
-Sys.u_ub = [1; 1];  % upper bound on u 
-Sys.u_lb = [-1; 0]; % lower bound on u
+SC.u_ub = [1; 1];  % upper bound on u 
+SC.u_lb = [-1; 0]; % lower bound on u
 % Sys.u_delta = [1; 1]; % not really sure what this does
 
-Sys.Wref = [Sys.time*0.; Sys.time*0.];
+SC.Wref = [SC.time*0.; SC.time*0.];
 
-Sys.stl_list = {};
+SC.stl_list = {};
 
 % goal, make sure we are in our lane and past the intersection
-Sys.stl_list(end+1) = {'ev (x1(t) < -1 and x2(t) < 1 and x2(t) > 0)'};
-%Sys.stl_list(end+1) = {'alw (ev (x2(t) <  1))'};
-%Sys.stl_list(end+1) = {'and alw (ev (x2(t) >  0))'};
-%Sys.stl_list(end+1) = {'and alw (ev (x1(t) < -1))'};
+SC.stl_list(end+1) = {'ev (x1(t) < -1 and x2(t) < 1 and x2(t) > 0)'};
 
-% safety, make sure we are always in our lane or in the intersection
-Sys.stl_list(end+1) = {'and alw ((x1(t) > 0 and x1(t) < 1) or (x2(t) > 0 and x2(t) < 1))'};
+% safety, make sure we are always in our lane
+SC.stl_list(end+1) = {'and alw ((x1(t) > 0 and x1(t) < 1) or (x2(t) > 0 and x2(t) < 1))'};
 
 % make sure we don't hit another car
 % Sys.stl_list(end+1) = {'alw (abs(x1(t) - w1(t)) > 0.5 or abs(x2(t) - w2(t) > 0.5))'};
 
-Sys.stl_list = {strjoin(Sys.stl_list)};
+SC.stl_list = {strjoin(SC.stl_list)};
 
 fprintf("getting controller...\n");
-controller = get_controller(Sys)
+controller = get_controller(SC)
 
 fprintf("running...\n");
 %Sys.solver_options = sdpsettings(Sys.solver_options, 'verbose', 2)
-Sys= Sys.run_deterministic(controller);
+SC= SC.run_deterministic(controller);
 
 %% Plot the path of the car over time
 figure;
@@ -84,12 +69,12 @@ plot([-3 3], [0 0], '--', 'LineWidth', 10, 'Color', 'k');
 
 for i=1:max_time+1
     hold on;
-    title(['time=' num2str(Sys.time(i))], 'fontsize', 30);
-    h2 = plot( Sys.system_data.X(1, i),  Sys.system_data.X(2, i), '^r-', 'MarkerSize', 25, 'MarkerFaceColor', 'r');
-    addpoints(h, Sys.system_data.X(1, i), Sys.system_data.X(2, i));
+    title(['time=' num2str(SC.time(i))], 'fontsize', 30);
+    h2 = plot( SC.system_data.X(1, i),  SC.system_data.X(2, i), '^r-', 'MarkerSize', 25, 'MarkerFaceColor', 'r');
+    addpoints(h, SC.system_data.X(1, i), SC.system_data.X(2, i));
     drawnow;
     
     pause(.05);
     delete(h2);
 end
-plot( Sys.system_data.X(1, i),  Sys.system_data.X(2, i), '^r-', 'MarkerSize', 25, 'MarkerFaceColor', 'r');
+plot( SC.system_data.X(1, i),  SC.system_data.X(2, i), '^r-', 'MarkerSize', 25, 'MarkerFaceColor', 'r');
