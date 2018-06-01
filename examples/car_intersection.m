@@ -8,10 +8,13 @@ close;
 % 
 SC = car_intersection_class(); 
 
+% have to increase robustness to satisfy STL
+SC.min_rob = 0.5;
+
 % x, y
 SC.x0= [0.5 ; -3];
 
-max_time = 30;
+max_time = 20;
 ts = 0.5;
 
 SC.time = 0:ts:max_time; 
@@ -60,7 +63,7 @@ SC= SC.run_deterministic(controller);
 
 %% Plot the path of the car over time
 close;
-figure;
+figure('pos', [0 0 600 600]);
 
 h = animatedline('linewidth', 10);
 axis([-3 3 -3 3]);
@@ -71,22 +74,24 @@ ylabel('x2');
 hold on;
 
 % vertical road lines
-plot([1 1], [-3 -1], [1 1], [1 3], 'LineWidth', 15, 'Color', 'k');
-plot([-1 -1], [-3 -1], [-1 -1], [1 3], 'LineWidth', 15, 'Color', 'k');
+plot([1 1], [-3 -1], [1 1], [1 3], 'LineWidth', 10, 'Color', 'k');
+plot([-1 -1], [-3 -1], [-1 -1], [1 3], 'LineWidth', 10, 'Color', 'k');
 
 % horizontal road lines
-plot([-3 -1], [1 1], [1 3], [1 1], 'LineWidth', 15, 'Color', 'k');
-plot([-3 -1], [-1 -1], [1 3], [-1 -1], 'LineWidth', 15, 'Color', 'k');
+plot([-3 -1], [1 1], [1 3], [1 1], 'LineWidth', 10, 'Color', 'k');
+plot([-3 -1], [-1 -1], [1 3], [-1 -1], 'LineWidth', 10, 'Color', 'k');
 
 % vertical lane lines
-plot([0 0], [-3 3], '--', 'LineWidth', 10, 'Color', 'k');
+plot([0 0], [-3 3], '--', 'LineWidth', 5, 'Color', 'k');
 
 % horizonal lane lines
-plot([-3 3], [0 0], '--', 'LineWidth', 10, 'Color', 'k');
+plot([-3 3], [0 0], '--', 'LineWidth', 5, 'Color', 'k');
+
+folder = 'images/intersection2/';
 
 for i=1:size(SC.system_data.W,2)
     hold on;
-    title(['time=' num2str(SC.time(i))], 'fontsize', 30);
+    title(['time=' num2str(SC.time(i))], 'fontsize', 20);
     
     x_coor = SC.system_data.W(1, i) - x_size;
     y_coor = SC.system_data.W(2, i) - y_size;
@@ -95,14 +100,14 @@ for i=1:size(SC.system_data.W,2)
         
     r = rectangle('Position', [x_coor y_coor width height], 'LineWidth', 3, 'FaceColor', [0 0 0 0.5]);
     
-    h2 = plot( SC.system_data.X(1, i),  SC.system_data.X(2, i), '^r-', 'MarkerSize', 25, 'MarkerFaceColor', 'r');
+    h2 = plot( SC.system_data.X(1, i),  SC.system_data.X(2, i), '^r-', 'MarkerSize', 20, 'MarkerFaceColor', 'r');
     addpoints(h, SC.system_data.X(1, i), SC.system_data.X(2, i));
     drawnow;
     
-    if SC.time(i) == 5
-        pause(10)
-    end
-    pause(.5);
+    %pause(.1);
+    
+    saveas(gcf, [folder  sprintf('%03d', i) '.png']);
+    
     delete(h2);
     delete(r);
     
@@ -113,5 +118,6 @@ width  = x_size*2;
 height = y_size*2;
 
 r = rectangle('Position', [x_coor y_coor width height], 'LineWidth', 3, 'FaceColor', [0 0 0 0.5]);
+plot( SC.system_data.X(1, i),  SC.system_data.X(2, i), '^r-', 'MarkerSize', 20, 'MarkerFaceColor', 'r');
 
-plot( SC.system_data.X(1, i),  SC.system_data.X(2, i), '^r-', 'MarkerSize', 25, 'MarkerFaceColor', 'r');
+saveas(gcf, [folder  sprintf('%03d', i) '.png']);
