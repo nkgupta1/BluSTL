@@ -55,7 +55,7 @@ SC.stl_list(end+1) = {'and alw (abs(x1(t) - w1(t)) > 0.4 or abs(x2(t) - w2(t)) >
 SC.stl_list = {strjoin(SC.stl_list)};
 
 fprintf("getting controller...\n");
-controller = get_controller(SC)
+controller = get_controller(SC);
 
 fprintf("running...\n");
 %Sys.solver_options = sdpsettings(Sys.solver_options, 'verbose', 2)
@@ -104,9 +104,9 @@ for i=1:size(SC.system_data.W,2)
     addpoints(h, SC.system_data.X(1, i), SC.system_data.X(2, i));
     drawnow;
     
-    %pause(.1);
+    pause(.1);
     
-    saveas(gcf, [folder  sprintf('%03d', i) '.png']);
+    %saveas(gcf, [folder  sprintf('%03d', i) '.png']);
     
     delete(h2);
     delete(r);
@@ -120,4 +120,4 @@ height = y_size*2;
 r = rectangle('Position', [x_coor y_coor width height], 'LineWidth', 3, 'FaceColor', [0 0 0 0.5]);
 plot( SC.system_data.X(1, i),  SC.system_data.X(2, i), '^r-', 'MarkerSize', 20, 'MarkerFaceColor', 'r');
 
-saveas(gcf, [folder  sprintf('%03d', i) '.png']);
+%saveas(gcf, [folder  sprintf('%03d', i) '.png']);
