@@ -1,0 +1,13 @@
+car.png
+    car simply avoiding an obstacle
+car_signal1.gif
+    car moving through a signal avoiding being in the intersection when red
+car_signal2.gif
+    same thing as car_signal1.gif with a modified objective function that 
+    penalizes later control inputs which means the car moves through quicker
+intersection1.gif
+    a car trying to make a left turn on yield with oncoming traffic. note how 
+    the car travels through the oncoming traffic in frame 10.
+intersection2.gif
+    fix the crash above by increasing the penalty for violating the specs
+
